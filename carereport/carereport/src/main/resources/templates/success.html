@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns:th="[http://www.thymeleaf.org](http://www.thymeleaf.org)">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>完了 - CareReport</title>
+    <link rel="stylesheet" href="/css/care_report_style.css">
+</head>
+
+<body>
+    <div class="container success-container">
+        <h2 class="success-title">登録が完了しました</h2>
+        <p class="success-message">データが正常にシステムに保存されました。</p>
+
+        <div class="btn-group">
+            <a th:href="@{/home}" class="submit-btn" style="text-decoration: none;">ホーム（ダッシュボード）に戻る</a>
+        </div>
+    </div>
+</body>
+
+</html>

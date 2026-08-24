@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>報告書の編集 - CareReport</title>
+    <link rel="stylesheet" href="/css/care_report_style.css">
+</head>
+
+<body>
+    <div class="container">
+        <a th:href="@{/report_list}" class="back-link">＜ 報告書一覧に戻る</a>
+        <header>
+            <h1>事故・ヒヤリハット報告の編集</h1>
+        </header>
+
+        <form id="reportForm" action="/update_report" method="POST">
+
+            <!--  隠しフィールドでIDを送信 -->
+            <input type="hidden" name="id" th:value="${report.id}">
+
+            <!-- 1. 対象利用者 -->
+            <div class="form-group">
+                <label>対象利用者 <span class="required">必須</span></label>
+                <select name="patient_id" required>
+                    <option value="" disabled>選択してください</option>
+                    <option th:each="patient : ${patients}" th:value="${patient.id}"
+                        th:text="|${patient.patientName} (${patient.careLevel})|"
+                        th:selected="${patient.id == report.patientId}">
+                    </option>
+                </select>
+            </div>
+
+            <!-- 2. 発生日時 -->
+            <div class="form-group">
+                <label for="incident_date">発生日時</label>
+                <input type="datetime-local" id="edit_incident_date" name="incident_date"
+                    th:value="${#temporals.format(report.incidentDate, 'yyyy-MM-dd''T''HH:mm')}">
+            </div>
+
+            <!-- 3. 発生場所 -->
+            <div class="form-group">
+                <label>発生場所</label>
+                <div class="tile-group">
+                    <label><input type="radio" name="location_id" value="1" th:checked="${report.locationId == 1}"><span
+                            class="tile-btn">居室</span></label>
+                    <label><input type="radio" name="location_id" value="2" th:checked="${report.locationId == 2}"><span
+                            class="tile-btn">食堂</span></label>
+                    <label><input type="radio" name="location_id" value="3" th:checked="${report.locationId == 3}"><span
+                            class="tile-btn">浴室</span></label>
+                    <label><input type="radio" name="location_id" value="4" th:checked="${report.locationId == 4}"><span
+                            class="tile-btn">トイレ</span></label>
+                    <label><input type="radio" name="location_id" value="5" th:checked="${report.locationId == 5}"><span
+                            class="tile-btn">廊下</span></label>
+                    <label><input type="radio" name="location_id" value="6" th:checked="${report.locationId == 6}"><span
+                            class="tile-btn">敷地内の建物外</span></label>
+                    <label><input type="radio" name="location_id" value="7" th:checked="${report.locationId == 7}"><span
+                            class="tile-btn">在宅</span></label>
+                    <label><input type="radio" name="location_id" value="99"
+                            th:checked="${report.locationId == 99}"><span class="tile-btn">その他</span></label>
+                </div>
+                <!-- 99（その他）が選ばれていた場合は、最初からテキストボックスを表示させておく -->
+                <input type="text" id="location_other_text" name="location_other" placeholder="具体的な場所を記入してください"
+                    th:value="${report.locationOther}"
+                    th:style="${report.locationId == 99 ? 'display:block; margin-top: 10px;' : 'display:none; margin-top: 10px;'}">
+            </div>
+
+            <!-- 4. 事故カテゴリー -->
+            <div class="form-group">
+                <label>事故カテゴリー</label>
+                <div class="tile-group">
+                    <label><input type="radio" name="category_id" value="1" th:checked="${report.categoryId == 1}"><span
+                            class="tile-btn">転倒・転落</span></label>
+                    <label><input type="radio" name="category_id" value="2" th:checked="${report.categoryId == 2}"><span
+                            class="tile-btn">誤嚥・窒息</span></label>
+                    <label><input type="radio" name="category_id" value="3" th:checked="${report.categoryId == 3}"><span
+                            class="tile-btn">皮膚剥離</span></label>
+                    <label><input type="radio" name="category_id" value="4" th:checked="${report.categoryId == 4}"><span
+                            class="tile-btn">誤薬、投薬漏れ</span></label>
+                    <label><input type="radio" name="category_id" value="5" th:checked="${report.categoryId == 5}"><span
+                            class="tile-btn">不明</span></label>
+                    <label><input type="radio" name="category_id" value="99"
+                            th:checked="${report.categoryId == 99}"><span class="tile-btn">その他</span></label>
+                </div>
+                <input type="text" id="category_other_text" name="category_other" placeholder="具体的なカテゴリーを記入してください"
+                    th:value="${report.categoryOther}"
+                    th:style="${report.categoryId == 99 ? 'display:block; margin-top: 10px;' : 'display:none; margin-top: 10px;'}">
+            </div>
+
+            <!-- 5. 医療的対応の有無 -->
+            <div class="form-group">
+                <label>医療的対応</label>
+                <div class="toggle-group">
+                    <label><input type="radio" name="medical_action_flag" value="0"
+                            th:checked="${report.medicalActionFlag == 0}" onchange="toggleMedicalText()"><span
+                            class="toggle-btn">なし</span></label>
+                    <label><input type="radio" name="medical_action_flag" value="1"
+                            th:checked="${report.medicalActionFlag == 1}" onchange="toggleMedicalText()"><span
+                            class="toggle-btn">あり（処置）</span></label>
+                </div>
+                <textarea id="medical_action_text" name="medical_action" placeholder="処置内容を入力（例：バイタル測定、絆創膏貼付など）"
+                    th:text="${report.medicalAction}"
+                    th:style="${report.medicalActionFlag == 1 ? 'display:block; margin-top: 10px;' : 'display:none; margin-top: 10px;'}"></textarea>
+            </div>
+
+            <!-- 6. 発生状況 -->
+            <div class="form-group">
+                <label>事故の発生状況</label>
+                <textarea id="situation_desc" name="situation_desc" th:text="${report.situationDesc}"></textarea>
+            </div>
+
+            <!-- 7.発生時の対応 -->
+            <div class="form-group">
+                <label>事故発生時の対応</label>
+                <textarea id="incident-response" name="response_desc" th:text="${report.responseDesc}"></textarea>
+            </div>
+
+            <!-- 8.事故発生後の利用者の状況 -->
+            <div class="form-group">
+                <label>事故発生後の利用者の状況</label>
+                <textarea id="incident-user-condition" name="patient-condition"
+                    th:text="${report.patientCondition}"></textarea>
+            </div>
+
+            <button type="submit" class="submit-btn" style="background-color: #2ecc71;">更新する</button>
+        </form>
+    </div>
+
+    <!-- 離脱防止や開閉アニメーション用のJSを読み込み -->
+    <script src="/js/care_report_script.js"></script>
+</body>
+
+</html>

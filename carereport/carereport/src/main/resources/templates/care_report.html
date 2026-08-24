@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns:th="[http://www.thymeleaf.org](http://www.thymeleaf.org)">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>事故・ヒヤリハット報告書</title>
+    <link rel="stylesheet" href="/css/care_report_style.css">
+</head>
+
+<body>
+    <div class="container">
+        <a th:href="@{/home}" class="back-link">ホームに戻る</a>
+        <header>
+            <h1>事故・ヒヤリハット報告</h1>
+        </header>
+
+        <form id="reportForm" action="/submit-report" method="POST" >
+
+            <!-- 1. 対象利用者 -->
+            <div class="form-group">
+                <label>対象利用者 <span class="required">必須</span></label>
+                <select name="patient_id" required>
+                    <option value="" disabled selected>選択してください</option>
+            
+                    <!-- コントローラーから渡された "patients" リストをループ処理して表示 -->
+                    <option th:each="patient : ${patients}" th:value="${patient.id}" th:text="|${patient.patientName} (${patient.careLevel})|">
+                        山田 太郎 (介護度)dammy
+                    </option>
+            
+                </select>
+            </div>
+
+            <!-- 2. 発生日時 -->
+            <div class="form-group">
+                <label for="incident_date">発生日時</label>
+                <input type="datetime-local" id="incident_date" name="incident_date">
+            </div>
+
+            <!-- 3. 発生場所 -->
+            <div class="form-group">
+                <label>発生場所</label>
+                <div class="tile-group">
+                    <label>
+                        <input type="radio" name="location_id" value="1">
+                        <span class="tile-btn">居室</span>
+                    </label>
+                    <label>
+                        <input type="radio" name="location_id" value="2">
+                        <span class="tile-btn">食堂</span>
+                    </label>
+                    <label>
+                        <input type="radio" name="location_id" value="3">
+                        <span class="tile-btn">浴室</span>
+                    </label>
+                    <label>
+                        <input type="radio" name="location_id" value="4">
+                        <span class="tile-btn">トイレ</span>
+                    </label>
+                    <label>
+                        <input type="radio" name="location_id" value="5">
+                        <span class="tile-btn">廊下</span>
+                    </label>
+                    <label>
+                        <input type="radio" name="location_id" value="6">
+                        <span class="tile-btn">敷地内の建物外</span>
+                    </label>
+                    <label>
+                        <input type="radio" name="location_id" value="7">
+                        <span class="tile-btn">在宅</span>
+                    </label>
+                    <label>
+                        <input type="radio" name="location_id" value="99">
+                        <span class="tile-btn">その他</span>
+                    </label>
+                </div>
+                <input type="text" id="location_other_text" name="location_other" placeholder="具体的な場所を記入してください"
+                    style="display:none; margin-top: 10px;">
+            </div>
+
+            <!-- 4. 事故カテゴリー -->
+            <div class="form-group">
+                <label>事故カテゴリー</label>
+                <div class="tile-group">
+                    <label>
+                        <input type="radio" name="category_id" value="1">
+                        <span class="tile-btn">転倒・転落</span>
+                    </label>
+                    <label>
+                        <input type="radio" name="category_id" value="2">
+                        <span class="tile-btn">誤嚥・窒息</span>
+                    </label>
+                    <label>
+                        <input type="radio" name="category_id" value="3">
+                        <span class="tile-btn">皮膚剥離</span>
+                    </label>
+                    <label>
+                        <input type="radio" name="category_id" value="4">
+                        <span class="tile-btn">誤薬、投薬漏れ</span>
+                    </label>
+                    <label>
+                        <input type="radio" name="category_id" value="5">
+                        <span class="tile-btn">不明</span>
+                    </label>
+                    <label>
+                        <input type="radio" name="category_id" value="99">
+                        <span class="tile-btn">その他</span>
+                    </label>
+                </div>
+                <input type="text" id="category_other_text" name="category_other" placeholder="具体的なカテゴリーを記入してください"
+                    style="display:none; margin-top: 10px;">
+            </div>
+
+            <!-- 5. 医療的対応の有無 -->
+            <div class="form-group">
+                <label>医療的対応</label>
+                <div class="toggle-group">
+                    <label>
+                        <input type="radio" name="medical_action_flag" value="0" checked onchange="toggleMedicalText()">
+                        <span class="toggle-btn">なし</span>
+                    </label>
+                    <label>
+                        <input type="radio" name="medical_action_flag" value="1" onchange="toggleMedicalText()">
+                        <span class="toggle-btn">あり（処置）</span>
+                    </label>
+                </div>
+                <textarea id="medical_action_text" name="medical_action" placeholder="処置内容を入力（例：バイタル測定、絆創膏貼付など）"
+                    style="display:none; margin-top: 10px;"></textarea>
+            </div>
+
+            <!-- 6. 発生状況 -->
+            <div class="form-group">
+                <label>事故の発生状況</label>
+                <textarea id="situation_desc" name="situation_desc"
+                    placeholder="当時の状況（いつ、どこで、だれが、何を、なぜ、どのように）を入力"></textarea>
+            </div>
+
+            <!-- 7.発生時の対応 -->
+            <div class="form-group">
+                <label>事故発生時の対応</label>
+                <textarea id="incident-response" name="response_desc" placeholder=""></textarea>
+            </div>
+
+            <!-- 8.事故発生後の利用者の状況 -->
+            <div class="form-group">
+                <label>事故発生後の利用者の状況</label>
+                <textarea id="incident-user-condition" name="patient-condition"></textarea>
+            </div>
+
+            <button type="submit" class="submit-btn">報告書を提出する</button>
+        </form>
+    </div>
+    <script src="/js/care_report_script.js"></script>
+</body>
+
+</html>

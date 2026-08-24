@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>利用者一覧 - CareReport</title>
+    <link rel="stylesheet" href="/css/care_report_style.css">
+</head>
+
+<body>
+    <div class="container">
+        <a th:href="@{/home}" class="back-link">＜ ホームに戻る</a>
+        <header>
+            <h1>利用者一覧</h1>
+        </header>
+
+        <!-- コントローラーから渡された patients の人数分ループ -->
+        <div class="list-card" th:each="patient : ${patientPage.content}">
+
+            <div class="list-title" th:text="${patient.patientName}">山田 太郎</div>
+
+            <div class="card-details">
+                <p><strong>介護度:</strong> <span th:text="${patient.careLevel}">要介護1</span></p>
+                <p><strong>生年月日:</strong> <span th:text="${patient.birthDate}">1930-01-01</span></p>
+                <p><strong>既往歴:</strong> <span th:text="${patient.medicalHistory}">高血圧</span></p>
+            </div>
+
+            <div class="list-actions">
+                <div sec:authorize="hasRole('ADMIN')">
+                    <!-- 編集・削除ボタン-->
+                    <a th:href="@{/edit_patient(id=${patient.id})}" class="btn-sm btn-edit">編集</a>
+                    <a th:href="@{/delete_patient(id=${patient.id})}" class="btn-sm btn-delete"
+                        onclick="if(!confirm('本当に削除してもよろしいですか？\n※この操作は取り消せません。')){return false;}">削除</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- ページ送りボタン -->
+
+        <div class="pagination" th:if="${patientPage.totalPages > 1}">
+            <a th:href="@{/patient_list(page=${patientPage.number - 1})}" th:if="${patientPage.hasPrevious()}"
+                class="page-btn">＜ 前へ</a>
+
+            <span class="page-info" th:text="|${patientPage.number + 1} / ${patientPage.totalPages} ページ|">1 / 1
+                ページ</span>
+
+            <a th:href="@{/patient_list(page=${patientPage.number + 1})}" th:if="${patientPage.hasNext()}"
+                class="page-btn">次へ
+                ＞</a>
+        </div>
+
+    </div>
+</body>
+
+</html>

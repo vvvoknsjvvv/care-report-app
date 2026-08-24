@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns:th="[http://www.thymeleaf.org](http://www.thymeleaf.org)">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ホーム - CareReport</title>
+    <link rel="stylesheet" href="/css/care_report_style.css">
+</head>
+
+<body>
+    <div class="container">
+        <div class="nav-header">
+            <h2>介護事故報告システム</h2>
+        </div>
+
+        <div class="menu-grid">
+            <a th:href="@{/care_report}" class="menu-btn">新規報告書</a>
+            <a th:href="@{/add_patient}" class="menu-btn secondary">利用者追加</a>
+            <a th:href="@{/report_list}" class="menu-btn warning">報告書一覧</a>
+            <a th:href="@{/patient_list}" class="menu-btn success">利用者一覧</a>
+        </div>
+
+        <div class="dashboard-section">
+            <div class="dashboard-title">直近の報告一覧</div>
+            <a th:href="@{/report_detail(id=${report.id})}" class="report-list-item" th:each="report : ${recentReports}">
+                <div>
+                    <!-- 日時を表示 -->
+                    <th:block th:text="${#temporals.format(report.incidentDate, 'yyyy/MM/dd HH:mm')}">2026/08/18 10:00
+                    </th:block>
+                    <br>
+                    <!-- 名前と事故種別を表示 -->
+                    <small th:text="|${report.patientName} / ${report.categoryName}|">山田 太郎 / 転倒・転落</small>
+                </div>
+            </a>
+        </div>
+
+        <div class="menu-grid">
+            <form th:action="@{/logout}" method="POST">
+                <button type="submit" class="menu-btn logout" onclick="if(!confirm('本当にログアウトしますか？')){return false;}">
+                    ログアウト
+                </button>
+            </form>
+        </div>
+    </div>
+</body>
+
+</html>

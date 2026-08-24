@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns:th="[http://www.thymeleaf.org](http://www.thymeleaf.org)">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>利用者追加 - CareReport</title>
+    <link rel="stylesheet" href="/css/care_report_style.css">
+</head>
+
+<body>
+    <div class="container">
+        <a th:href="@{/home}" class="back-link">ホームに戻る</a>
+        <header>
+            <h1>利用者登録</h1>
+        </header>
+
+        <form action="/register-patient" method="POST">
+            <div class="form-group">
+                <label for="patient_name">利用者氏名</label>
+                <input type="text" id="patient_name" name="patient_name" placeholder="例：山田 太郎" required>
+            </div>
+
+            <div class="form-group">
+                <label for="birth_date">生年月日</label>
+                <input type="date" id="birth_date" name="birth_date" required>
+            </div>
+
+            <div class="form-group">
+                <label>要介護度</label>
+                <select name="care_level" required>
+                    <option value="">選択してください</option>
+                    <option value="自立">自立</option>
+                    <option value="要支援1">要支援1</option>
+                    <option value="要支援2">要支援2</option>
+                    <option value="要介護1">要介護1</option>
+                    <option value="要介護2">要介護2</option>
+                    <option value="要介護3">要介護3</option>
+                    <option value="要介護4">要介護4</option>
+                    <option value="要介護5">要介護5</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="medical_history">既往歴</label>
+                <textarea id="medical_history" name="medical_history" placeholder="高血圧、糖尿病、過去の骨折歴など"
+                    style="height: 80px;"></textarea>
+            </div>
+
+            <button type="submit" class="submit-btn">登録する</button>
+        </form>
+    </div>
+</body>
+
+</html>

@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>報告書一覧 - CareReport</title>
+    <link rel="stylesheet" href="/css/care_report_style.css">
+</head>
+
+<body>
+    <div class="container">
+        <a th:href="@{/home}" class="back-link">ホームに戻る</a>
+        <header>
+            <h1>過去の報告書一覧</h1>
+        </header>
+        <!-- 検索フォームパネル -->
+        <div class="search-panel"
+            style="background: #fafafa; padding: 15px; border-radius: 8px; border: 1px solid var(--border-color); margin-bottom: 20px;">
+            <form action="/report_list" method="GET" style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+
+                <div>
+                    <label style="font-size: 0.9rem;">対象利用者</label>
+                    <select name="searchPatientId" style="padding: 8px;">
+                        <option value="">すべて</option>
+                        <option th:each="p : ${patients}" th:value="${p.id}" th:text="${p.patientName}"
+                            th:selected="${p.id == searchPatientId}"></option>
+                    </select>
+                </div>
+
+                <div>
+                    <label style="font-size: 0.9rem;">フリーワード (状況・対応など)</label>
+                    <input type="text" name="searchKeyword" th:value="${searchKeyword}" placeholder="検索キーワード"
+                        style="padding: 8px;">
+                </div>
+
+                <div>
+                    <label style="font-size: 0.9rem;">発生日 (いつから)</label>
+                    <input type="date" name="searchStartDate" th:value="${searchStartDate}" style="padding: 8px;">
+                </div>
+
+                <div>
+                    <label style="font-size: 0.9rem;">発生日 (いつまで)</label>
+                    <input type="date" name="searchEndDate" th:value="${searchEndDate}" style="padding: 8px;">
+                </div>
+
+                <div>
+                    <label style="font-size: 0.9rem;">発生場所</label>
+                    <select name="searchLocationId" style="padding: 8px;">
+                        <option value="">すべて</option>
+                        <option value="1" th:selected="${searchLocationId == 1}">居室</option>
+                        <option value="2" th:selected="${searchLocationId == 2}">食堂</option>
+                        <option value="3" th:selected="${searchLocationId == 3}">浴室</option>
+                        <option value="4" th:selected="${searchLocationId == 4}">トイレ</option>
+                        <option value="5" th:selected="${searchLocationId == 5}">廊下</option>
+                        <option value="6" th:selected="${searchLocationId == 6}">敷地内の建物外</option>
+                        <option value="7" th:selected="${searchLocationId == 7}">在宅</option>
+                        <option value="99" th:selected="${searchLocationId == 99}">その他</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label style="font-size: 0.9rem;">事故カテゴリー</label>
+                    <select name="searchCategoryId" style="padding: 8px;">
+                        <option value="">すべて</option>
+                        <option value="1" th:selected="${searchCategoryId == 1}">転倒・転落</option>
+                        <option value="2" th:selected="${searchCategoryId == 2}">誤嚥・窒息</option>
+                        <option value="3" th:selected="${searchCategoryId == 3}">皮膚剥離</option>
+                        <option value="4" th:selected="${searchCategoryId == 4}">誤薬、投薬漏れ</option>
+                        <option value="5" th:selected="${searchCategoryId == 5}">不明</option>
+                        <option value="99" th:selected="${searchCategoryId == 99}">その他</option>
+                    </select>
+                </div>
+
+                <div style="grid-column: span 2; text-align: right;">
+                    <a th:href="@{/report_list}" class="btn-sm"
+                        style="background-color: #7f8c8d; margin-right: 10px;">クリア</a>
+                    <button type="submit" class="submit-btn"
+                        style="width: auto; margin-top: 0; padding: 8px 30px;">検索</button>
+                </div>
+            </form>
+        </div>
+        <div class="list-card" th:each="report : ${reportPage.content}">
+            <div class="list-header">
+                <span th:text="|発生日: ${#temporals.format(report.incidentDate, 'yyyy/MM/dd HH:mm')}|">発生日</span>
+            </div>
+            <div class="list-title" th:text="|${report.patientName} (${report.categoryName})|">名前・事故</div>
+            <div th:text="|場所: ${report.locationName}|">場所</div>
+
+            <div class="list-actions">
+                <a th:href="@{/report_detail(id=${report.id})}" class="btn-sm" style="background-color: #7f8c8d;">詳細</a>
+                <div sec:authorize="hasRole('ADMIN')">
+                    <a th:href="@{/edit_report(id=${report.id})}" class="btn-sm btn-edit">編集</a>
+                    <a th:href="@{/delete_report(id=${report.id})}" class="btn-sm btn-delete"
+                        onclick="if(!confirm('本当に削除してもよろしいですか？\n※この操作は取り消せません。')){return false;}">削除</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- ページ送りボタン -->
+
+        <!-- ページネーション（検索条件を引き継ぐ完全版） -->
+        <div class="pagination" th:if="${reportPage.totalPages > 1}">
+            <a th:href="@{/report_list(page=${reportPage.number - 1}, searchPatientId=${searchPatientId}, searchStartDate=${searchStartDate}, searchEndDate=${searchEndDate}, searchLocationId=${searchLocationId}, searchCategoryId=${searchCategoryId}, searchKeyword=${searchKeyword})}"
+                th:if="${reportPage.hasPrevious()}" class="page-btn">＜ 前へ</a>
+
+            <span class="page-info" th:text="|${reportPage.number + 1} / ${reportPage.totalPages} ページ|">1 / 1 ページ</span>
+
+            <a th:href="@{/report_list(page=${reportPage.number + 1}, searchPatientId=${searchPatientId}, searchStartDate=${searchStartDate}, searchEndDate=${searchEndDate}, searchLocationId=${searchLocationId}, searchCategoryId=${searchCategoryId}, searchKeyword=${searchKeyword})}"
+                th:if="${reportPage.hasNext()}" class="page-btn">次へ ＞</a>
+        </div>
+
+    </div>
+</body>
+
+</html>
