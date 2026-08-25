@@ -44,7 +44,7 @@ http://localhost:8081/h2-console からアクセス。
 
 ### 〇ポート番号を変更するファイル
 
-src/main/resources/application.propertiesの server.port=\*\*\*\* を変更。
+application.propertiesファイルの server.port=\*\*\*\* を変更。
 
 **変更時はMavenで再度パッケージ化**
 
@@ -66,7 +66,7 @@ src/main/resources/application.propertiesの server.port=\*\*\*\* を変更。
 
 ### 〇挙動確認用の仮データ操作
 
-src/main/resources/にあるdata.sqlで仮データ生成。
+resourcesフォルダにあるdata.sqlで仮データ生成。
 不要な場合は削除。
 
 **変更時はMavenで再度パッケージ化**
