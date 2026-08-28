@@ -20,10 +20,10 @@
 
         <div class="menu-grid">
             <a th:href="@{/care_report}" class="menu-btn">新規報告書</a>
-            <a th:href="@{/prevention_list}" class="menu-btn preventive">連絡対応・再発防止策</a>
+            <a th:href="@{/prevention_list}" class="menu-btn preventive">事後対応・再発防止策</a>
             <a th:href="@{/report_list}" class="menu-btn warning">報告書一覧</a>
             <a th:href="@{/patient_list}" class="menu-btn success">利用者一覧</a>
-            <a th:href="@{/add_patient}" class="menu-btn secondary">利用者追加</a>
+            <a th:href="@{/add_patient}" class="menu-btn secondary" th:if="${#authorization.expression('hasRole(''ADMIN'')')}">利用者追加</a>
         </div>
 
         <div class="dashboard-section">
