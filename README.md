@@ -102,4 +102,4 @@ application.propertiesファイルの server.port=\*\*\*\* を変更。
   resourcesフォルダにあるdata.sqlで仮データ生成。
   不要な場合は削除。
 
-          **変更時はMavenで再度パッケージ化**
+        **変更時はMavenで再度パッケージ化**
