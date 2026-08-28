@@ -27,6 +27,7 @@ public class DataInitializer implements CommandLineRunner {
             admin.setLoginId("admin");
             admin.setPassword(passwordEncoder.encode("admin123")); 
             admin.setRole("ROLE_ADMIN"); // 管理者権限
+            admin.setStaffname("施設長 太郎");  //名前
             userRepository.save(admin);
         }
 
@@ -36,7 +37,19 @@ public class DataInitializer implements CommandLineRunner {
             staff.setLoginId("staff");
             staff.setPassword(passwordEncoder.encode("staff123"));
             staff.setRole("ROLE_USER"); // 一般権限
+            staff.setStaffname("一般 二郎");
             userRepository.save(staff);
         }
+
+        // ③一般アカウント
+        if (userRepository.findByLoginId("staff2").isEmpty()) {
+            UserAccount staff = new UserAccount();
+            staff.setLoginId("staff2");
+            staff.setPassword(passwordEncoder.encode("staff321"));
+            staff.setRole("ROLE_USER"); // 一般権限
+            staff.setStaffname("権限 普通");
+            userRepository.save(staff);
+        }
+
     }
 }

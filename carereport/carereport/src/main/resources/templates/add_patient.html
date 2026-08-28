@@ -10,7 +10,7 @@
 
 <body>
     <div class="container">
-        <a th:href="@{/home}" class="back-link">ホームに戻る</a>
+        <a th:href="@{/home}" class="back-link">＜ ホームに戻る</a>
         <header>
             <h1>利用者登録</h1>
         </header>
@@ -45,6 +45,12 @@
                 <label for="medical_history">既往歴</label>
                 <textarea id="medical_history" name="medical_history" placeholder="高血圧、糖尿病、過去の骨折歴など"
                     style="height: 80px;"></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="emergency_contact">緊急連絡先</label>
+                <textarea id="emergency_contact" name="emergency_contact"
+               style="height: 80px;" placeholder="例: 第〇連絡先 妻（山田花子） 090-XXXX-XXXX"></textarea>
             </div>
 
             <button type="submit" class="submit-btn">登録する</button>

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja" xmlns:th="http://www.thymeleaf.org">
+<html lang="ja" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 
 <head>
     <meta charset="UTF-8">
@@ -15,10 +15,22 @@
             <h1>事故・ヒヤリハット詳細</h1>
         </header>
 
+        <div sec:authorize="hasRole('ADMIN')" style="margin-top: 30px; text-align: center;">
+            <a th:href="@{/add_prevention(id=${report.id})}" class="btn"
+                style="background-color: #28a745; width: 100%; display: block; box-sizing: border-box; text-align: center;">
+                事後対応・再発防止策を編集する (管理者用)
+            </a>
+        </div>
+
         <div class="detail-group">
             <div class="detail-label">対象利用者</div>
             <div class="detail-value"
                 th:text="|${report.patientName} (${patient != null ? patient.careLevel : '情報なし'})|">山田 太郎 (要介護3)</div>
+        </div>
+
+        <div class="detail-group">
+            <div class="detail-label">対応職員</div>
+            <div class="detail-value" th:text="|${report.builderName != null ? report.builderName : '未設定'}|">職員</div>
         </div>
 
         <div class="detail-group">
@@ -55,6 +67,31 @@
             <div class="detail-label">事故発生後の利用者の状況</div>
             <div class="detail-value" th:text="${report.patientCondition}">その後の状況</div>
         </div>
+
+        <!-- ▼ ここから追加：事後対応・再発防止策の表示 ▼ -->
+        <div class="detail-group">
+            <div class="detail-label">家族等への報告</div>
+            <div class="detail-value" th:text="${report.familyReport}"></div>
+        </div>
+        
+        <div class="detail-group">
+            <div class="detail-label">事故の原因分析</div>
+            <div class="detail-value" th:text="${report.causeAnalysis}"></div>
+        </div>
+        
+        <div class="detail-group">
+            <div class="detail-label">再発防止策</div>
+            <div class="detail-value" th:text="${report.preventiveMeasure}"></div>
+        </div>
+        
+        <div class="detail-group">
+            <div class="detail-label">事後対応ステータス</div>
+            <div class="detail-value">
+                <span th:text="${report.managerCheck != null && report.managerCheck ? '✅ 施設長へ報告済' : '未報告'}"></span>
+                <span th:text="${report.completeCheck != null && report.completeCheck ? '✅ 対応完了' : '未完了'}"></span>
+            </div>
+        </div>
+
 
     </div>
 </body>

@@ -1,5 +1,6 @@
 package com.example.carereport.entity;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -19,6 +20,10 @@ public class CareReport {
     private Long id;
 
     // 画面の入力項目に対応するカラム
+
+    @javax.persistence.ManyToOne
+    @javax.persistence.JoinColumn(name = "created_by_user_id")
+    private UserAccount createdByUser; //作成者（UserAccountと紐づけ）
     private Long patientId;             // 対象利用者のID
     private LocalDateTime incidentDate; // 発生日時
     
@@ -34,6 +39,17 @@ public class CareReport {
     private String situationDesc;       // 事故の発生状況
     private String responseDesc;        // 事故発生時の対応
     private String patientCondition;    // 事故発生後の利用者の状況
+    @javax.persistence.Column(columnDefinition = "TEXT")
+    private String familyReport; //家族への報告
+    @javax.persistence.Column(columnDefinition = "TEXT")
+    private String causeAnalysis; //事故の原因分析
+    @javax.persistence.Column(columnDefinition = "TEXT")
+    private String preventiveMeasure; //再発防止策
+    @Column(name = "manager_check")
+    private Boolean managerCheck; // 施設長への報告
+    @Column(name = "complete_check")
+    private Boolean completeCheck; // 完了確認
+
 
     @javax.persistence.Transient // データベースのカラムとして扱わない（画面表示用）
     private String patientName;
@@ -91,4 +107,36 @@ public class CareReport {
 
     public String getPatientCondition() { return patientCondition; }
     public void setPatientCondition(String patientCondition) { this.patientCondition = patientCondition; }
+
+    public UserAccount getCreatedByUser() { return createdByUser; }
+    public void setCreatedByUser(UserAccount createdByUser) { this.createdByUser = createdByUser; }
+
+    public String getFamilyReport() { return familyReport; }
+    public void setFamilyReport(String familyReport) { this.familyReport = familyReport; }
+
+    public String getCauseAnalysis() { return causeAnalysis; }
+    public void setCauseAnalysis(String causeAnalysis) { this.causeAnalysis = causeAnalysis; }
+
+    public String getPreventiveMeasure() { return preventiveMeasure; }
+    public void setPreventiveMeasure(String preventiveMeasure) { this.preventiveMeasure = preventiveMeasure; }
+    public Boolean getManagerCheck() {
+        return managerCheck;
+    }
+    public void setManagerCheck(Boolean managerCheck) {
+        this.managerCheck = managerCheck;
+    }
+    public Boolean getCompleteCheck() {
+        return completeCheck;
+    }
+    public void setCompleteCheck(Boolean completeCheck) {
+        this.completeCheck = completeCheck;
+    }
+
+    // 名前表示用
+    @javax.persistence.Transient 
+    private String builderName;
+
+    public String getBuilderName() { return builderName; }
+    public void setBuilderName(String builderName) { this.builderName = builderName; }
+
 }

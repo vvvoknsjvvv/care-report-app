@@ -30,6 +30,8 @@ public class UserAccount {
     @Column(nullable = false)
     private String role;
 
+    @Column(name = "staff_name")
+    private String staffName; //職員名
     // =========================================
     // Getter と Setter
     // =========================================
@@ -63,5 +65,13 @@ public class UserAccount {
 
     public void setRole(String role) {
         this.role = role;
+    }
+
+    public String getStaffname(){
+        return  staffName;
+    }
+
+    public void setStaffname(String staffName){
+        this.staffName = staffName;
     }
 }

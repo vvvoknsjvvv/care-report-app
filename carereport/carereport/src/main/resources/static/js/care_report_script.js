@@ -43,7 +43,7 @@ function toggleCategoryOther() {
   const otherInput = document.getElementById("category_other_text");
 
   // HTMLに合わせて条件を value="6" に修正
-  if (value === "6") {
+  if (value === "99") {
     otherInput.style.display = "block";
   } else {
     otherInput.style.display = "none";
@@ -103,22 +103,51 @@ window.onload = function () {
 let isFormDirty = false; // 入力内容が変更されたかどうかのフラグ
 
 document.addEventListener("DOMContentLoaded", function () {
-    const formElements = document.querySelectorAll('form input, form select, form textarea');
-    formElements.forEach(element => {
-        element.addEventListener('change', () => { isFormDirty = true; });
-        element.addEventListener('input', () => { isFormDirty = true; });
+  const formElements = document.querySelectorAll(
+    "form input, form select, form textarea",
+  );
+  formElements.forEach((element) => {
+    element.addEventListener("change", () => {
+      isFormDirty = true;
     });
-    const allForms = document.querySelectorAll('form');
-    allForms.forEach(form => {
-        form.addEventListener('submit', () => {
-            isFormDirty = false; 
-        });
+    element.addEventListener("input", () => {
+      isFormDirty = true;
     });
+  });
+  const allForms = document.querySelectorAll("form");
+  allForms.forEach((form) => {
+    form.addEventListener("submit", () => {
+      isFormDirty = false;
+    });
+  });
 
-    window.addEventListener('beforeunload', function (e) {
-        if (isFormDirty) {
-            e.preventDefault();
-            e.returnValue = ''; 
+  window.addEventListener("beforeunload", function (e) {
+    if (isFormDirty) {
+      e.preventDefault();
+      e.returnValue = "";
+    }
+  });
+});
+
+document.addEventListener("DOMContentLoaded", function () {
+  const form = document.getElementById("preventionForm");
+
+  if (form) {
+    form.addEventListener("submit", function (event) {
+      // 「報告書作成を完了する」チェックボックスの状態を取得
+      const completeCheck = document.getElementById("complete_check");
+
+      if (completeCheck && completeCheck.checked) {
+        // チェックが入っている場合はポップアップを表示
+        const confirmed = confirm(
+          "すべての作業を終えて報告書作成を完了しますか？\n※完了状態になります。",
+        );
+
+        if (!confirmed) {
+          // 「キャンセル」が押されたら、送信をストップする
+          event.preventDefault();
         }
+      }
     });
+  }
 });

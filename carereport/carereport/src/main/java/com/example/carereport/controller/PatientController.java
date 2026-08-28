@@ -52,7 +52,8 @@ public class PatientController {
             @RequestParam("patient_name") String patientName,
             @RequestParam("birth_date") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate birthDate,
             @RequestParam("care_level") String careLevel,
-            @RequestParam("medical_history") String medicalHistory) {
+            @RequestParam("medical_history") String medicalHistory,
+            @RequestParam("emergency_contact") String emergencyContact){
 
         // 1. 空の利用者データ（設計図）を用意する
         Patient patient = new Patient();
@@ -62,6 +63,7 @@ public class PatientController {
         patient.setBirthDate(birthDate);
         patient.setCareLevel(careLevel);
         patient.setMedicalHistory(medicalHistory);
+        patient.setEmergencyContact(emergencyContact);
 
         // 3. データベースに保存する（SQLを書かずにこれ1行でINSERT完了！）
         patientRepository.save(patient);
@@ -101,14 +103,19 @@ public class PatientController {
             @RequestParam("patient_name") String patientName,
             @RequestParam("birth_date") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate birthDate,
             @RequestParam("care_level") String careLevel,
-            @RequestParam("medical_history") String medicalHistory) {
+            @RequestParam("medical_history") String medicalHistory,
+            @RequestParam(value = "emergency_contact", required = false) String emergencyContact) {
 
         Patient patient = patientRepository.findById(id).orElse(new Patient());
-        patient.setPatientName(patientName);
-        patient.setBirthDate(birthDate);
-        patient.setCareLevel(careLevel);
-        patient.setMedicalHistory(medicalHistory);
-        patientRepository.save(patient);
+        if(patient !=null){
+            patient.setPatientName(patientName);
+            patient.setBirthDate(birthDate);
+            patient.setCareLevel(careLevel);
+            patient.setMedicalHistory(medicalHistory);
+            patient.setEmergencyContact(emergencyContact);
+            patientRepository.save(patient);
+        }
+        
         return "redirect:/patient_list";
     }
 }

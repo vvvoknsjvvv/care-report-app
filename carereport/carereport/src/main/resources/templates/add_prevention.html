@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>事後対応・再発防止策</title>
+    <!-- 既存のデザインを適用 -->
+    <link rel="stylesheet" href="/css/care_report_style.css">
+</head>
+
+<body>
+    <div class="container">
+        <a th:href="@{/prevention_list}" class="back-link">＜ 一覧に戻る</a>
+        <header>
+            <h1>事後対応・再発防止策</h1>
+        </header>
+
+        <!-- ▼ 事故の基本情報（既存のフォームUIに合わせて表示） -->
+        <div class="form-group">
+            <label>事故の基本情報（確認用）</label>
+            <div class="summary-box">
+                <p><strong>対象利用者：</strong> <span th:text="${report.patientName}"></span></p>
+                <p><strong>対応職員 : </strong><span th:text="|${report.builderName != null ? report.builderName : '未設定'}|"></span></p>
+                <p><strong>緊急連絡先：</strong> <span th:text="${patient != null ? patient.emergencyContact : '未登録'}"
+                        class="text-danger"></span></p>
+                <p><strong>発生日時：</strong> <span
+                        th:text="${#temporals.format(report.incidentDate, 'yyyy年MM月dd日 HH:mm')}"></span></p>
+                <p><strong>事故カテゴリー：</strong> <span th:text="${report.categoryName}"></span></p>
+                <p><strong>発生時の状況：</strong><br> <span th:text="${report.situationDesc}"></span></p>
+                <p><strong>事故発生時の対応：</strong><br> <span th:text="${report.responseDesc != null ? report.responseDesc : '未入力'}"></span></p>
+                <p><strong>発生後の利用者の状況：</strong><br> <span
+                        th:text="${report.patientCondition != null ? report.patientCondition : '未入力'}"></span></p>
+            </div>
+        </div>
+
+
+
+        <!-- ▼ 事後入力用のフォーム -->
+        <form id="preventionForm" action="/update_prevention" method="POST">
+            <input type="hidden" name="id" th:value="${report.id}">
+
+            <!-- 施設長への連絡確認 -->
+            <div class="form-group">
+                <label></label>
+                <div class="checkbox-group">
+                    <label>
+                        <input type="checkbox" id="manager_check" name="manager_check" value="true"
+                            th:checked="${report.managerCheck == true}"> 施設長への報告
+                    </label>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="family_report">家族等への報告</label>
+                <textarea id="family_report" name="family_report" th:text="${report.familyReport}"
+                    placeholder="報告時間と電話内容、反応など"></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="cause_analysis">事故の原因分析</label>
+                <textarea id="cause_analysis" name="cause_analysis" th:text="${report.causeAnalysis}"
+                    placeholder="本人要因、職員要因、環境要因"></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="preventive_measure">再発防止策</label>
+                <textarea id="preventive_measure" name="preventive_measure" th:text="${report.preventiveMeasure}"
+                    placeholder="手順変更、環境変更、評価時期など"></textarea>
+            </div>
+
+            <div class="form-group">
+                <label>完了確認</label>
+                <div class="checkbox-group">
+                    <label>
+                        <input type="checkbox" id="complete_check" name="complete_check" value="true"
+                            th:checked="${report.completeCheck == true}"> 報告書作成を完了する
+                    </label>
+                </div>
+            </div>
+
+            <button type="submit" class="submit-btn">内容を保存する</button>
+        </form>
+    </div>
+
+    <script src="/js/care_report_script.js"></script>
+
+    <script>
+            // 「完了確認」チェックボックスの制御
+            document.addEventListener('DOMContentLoaded', function () {
+            const familyReport = document.getElementById('family_report');
+            const causeAnalysis = document.getElementById('cause_analysis');
+            const preventiveMeasure = document.getElementById('preventive_measure');
+            const completeCheck = document.getElementById('complete_check');
+
+            function toggleCompleteCheck() {
+  
+                const isAllFilled = familyReport.value.trim() !== '' &&
+                    causeAnalysis.value.trim() !== '' &&
+                    preventiveMeasure.value.trim() !== '';
+
+                completeCheck.disabled = !isAllFilled;
+
+                if (!isAllFilled) {
+                    completeCheck.checked = false;
+                }
+            }
+
+    
+            if (familyReport && causeAnalysis && preventiveMeasure && completeCheck) {
+                familyReport.addEventListener('input', toggleCompleteCheck);
+                causeAnalysis.addEventListener('input', toggleCompleteCheck);
+                preventiveMeasure.addEventListener('input', toggleCompleteCheck);
+
+                toggleCompleteCheck();
+            }
+        });
+    </script>
+</body>
+
+</html>

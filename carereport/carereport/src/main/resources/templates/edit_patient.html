@@ -54,9 +54,18 @@
                     th:text="${patient.medicalHistory}"></textarea>
             </div>
 
+            <div class="form-group">
+                <label for="emergency_contact">緊急連絡先</label>
+                <textarea id="emergency_contact" name="emergency_contact" style="height: 80px;"
+                    th:text="${patient.emergencyContact}"></textarea>
+            </div>
             <button type="submit" class="submit-btn" style="background-color: #2ecc71;">更新する</button>
         </form>
+
     </div>
+
+
+  
 </body>
 
 </html>

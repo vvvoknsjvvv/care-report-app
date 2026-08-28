@@ -10,7 +10,7 @@
 
 <body>
     <div class="container">
-        <a th:href="@{/home}" class="back-link">ホームに戻る</a>
+        <a th:href="@{/home}" class="back-link">＜ ホームに戻る</a>
         <header>
             <h1>過去の報告書一覧</h1>
         </header>
@@ -49,12 +49,14 @@
                     <select name="searchLocationId" style="padding: 8px;">
                         <option value="">すべて</option>
                         <option value="1" th:selected="${searchLocationId == 1}">居室</option>
-                        <option value="2" th:selected="${searchLocationId == 2}">食堂</option>
-                        <option value="3" th:selected="${searchLocationId == 3}">浴室</option>
-                        <option value="4" th:selected="${searchLocationId == 4}">トイレ</option>
-                        <option value="5" th:selected="${searchLocationId == 5}">廊下</option>
-                        <option value="6" th:selected="${searchLocationId == 6}">敷地内の建物外</option>
-                        <option value="7" th:selected="${searchLocationId == 7}">在宅</option>
+                        <option value="2" th:selected="${searchLocationId == 2}">食堂等共用部</option>
+                        <option value="3" th:selected="${searchLocationId == 3}">機能訓練室</option>
+                        <option value="4" th:selected="${searchLocationId == 4}">浴室・脱衣</option>
+                        <option value="5" th:selected="${searchLocationId == 5}">トイレ</option>
+                        <option value="6" th:selected="${searchLocationId == 6}">廊下</option>
+                        <option value="7" th:selected="${searchLocationId == 7}">敷地内の建物外</option>
+                        <option value="8" th:selected="${searchLocationId == 8}">在宅</option>
+                        <option value="9" th:selected="${searchLocationId == 9}">敷地外</option>
                         <option value="99" th:selected="${searchLocationId == 99}">その他</option>
                     </select>
                 </div>
@@ -67,7 +69,12 @@
                         <option value="2" th:selected="${searchCategoryId == 2}">誤嚥・窒息</option>
                         <option value="3" th:selected="${searchCategoryId == 3}">皮膚剥離</option>
                         <option value="4" th:selected="${searchCategoryId == 4}">誤薬、投薬漏れ</option>
-                        <option value="5" th:selected="${searchCategoryId == 5}">不明</option>
+                        <option value="5" th:selected="${searchCategoryId == 5}">食中毒・感染症等</option>
+                        <option value="6" th:selected="${searchCategoryId == 6}">医療処置関連</option>
+                        <option value="7" th:selected="${searchCategoryId == 7}">異食</option>
+                        <option value="8" th:selected="${searchCategoryId == 8}">徘徊・行方不明</option>
+                        <option value="9" th:selected="${searchCategoryId == 9}">職員の法令違反・不祥事</option>
+                        <option value="10" th:selected="${searchCategoryId == 10}">不明</option>
                         <option value="99" th:selected="${searchCategoryId == 99}">その他</option>
                     </select>
                 </div>
@@ -83,9 +90,11 @@
         <div class="list-card" th:each="report : ${reportPage.content}">
             <div class="list-header">
                 <span th:text="|発生日: ${#temporals.format(report.incidentDate, 'yyyy/MM/dd HH:mm')}|">発生日</span>
+                 <span th:text="|対応職員 :    ${report.builderName != null ? report.builderName : '未設定'}|"></span>
             </div>
             <div class="list-title" th:text="|${report.patientName} (${report.categoryName})|">名前・事故</div>
             <div th:text="|場所: ${report.locationName}|">場所</div>
+            <div th:text="|発生状況: ${report.situationDesc}|" style="margin-top: 5px; color: #555; font-size: 0.95rem;">発生状況</div>
 
             <div class="list-actions">
                 <a th:href="@{/report_detail(id=${report.id})}" class="btn-sm" style="background-color: #7f8c8d;">詳細</a>

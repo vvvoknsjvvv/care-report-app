@@ -25,7 +25,7 @@ public class Patient {
     private LocalDate birthDate;   // 生年月日
     private String careLevel;      // 要介護度
     private String medicalHistory; // 既往歴
-
+    private String emergencyContact; //緊急連絡先
     // =========================================
     // Getter と Setter
     // =========================================
@@ -68,5 +68,13 @@ public class Patient {
 
     public void setMedicalHistory(String medicalHistory) {
         this.medicalHistory = medicalHistory;
+    }
+
+    public String getEmergencyContact(){
+        return emergencyContact;
+    }
+
+    public void setEmergencyContact(String emergencyContact) {
+        this.emergencyContact = emergencyContact;
     }
 }
